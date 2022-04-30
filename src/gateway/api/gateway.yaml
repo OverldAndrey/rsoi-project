@@ -1,0 +1,338 @@
+openapi: 3.0.3
+
+info:
+  title: Gateway
+  description: Gateway
+  version: 1.0.0
+
+tags:
+  - name: Games
+  - name: Auth
+  - name: User
+  - name: Stats
+
+paths:
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Registration successfull
+
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: New session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+
+  /logout:
+    delete:
+      tags:
+        - Auth
+      summary: Logout user
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Logout successfull
+        '401':
+          description: Token invalid
+
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Get all games
+      responses:
+        '200':
+          description: Games loaded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+  /games/{id}:
+    get:
+      tags:
+        - Games
+      summary: Get game by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Game loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+
+  /games/{id}/buy:
+    post:
+      tags:
+        - Games
+      summary: Buy a game
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Game bought
+        '404':
+          description: Game not found
+        '401':
+          description: Token invalid
+        '422':
+          description: Not enough money
+
+  /me:
+    get:
+      tags:
+        - User
+      summary: Get user info
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Token invalid
+
+  /me/library:
+    get:
+      tags:
+        - User
+      summary: Get user's games
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: User's games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '401':
+          description: Token invalid
+
+  /me/wallet:
+    get:
+      tags:
+        - User
+      summary: User's balance
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: User's balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FillBalanceRequest'
+        '401':
+          description: Token invalid
+    patch:
+      tags:
+        - User
+      summary: Fill balance
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FillBalanceRequest'
+      responses:
+        '200':
+          description: Balance updated
+        '400':
+          description: Bad amount
+        '401':
+          description: Token invalid
+
+  /statistics:
+    get:
+      tags:
+        - Stats
+      summary: System statistics
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Statistic'
+        '401':
+          description: Token invalid
+        '403':
+          description: User is not admin
+
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+
+    LoginRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+
+    FillBalanceRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+
+    Statistic:
+      type: object
+      properties:
+        service:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - Action
+            - Error
+        timestamp:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        username:
+          type: string
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: integer
+        token:
+          type: string
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        developer:
+          type: string
+        publisher:
+          type: string
+        price:
+          type: number
+        description:
+          type: string
+        requirements:
+          type: string

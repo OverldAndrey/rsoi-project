@@ -1,0 +1,15 @@
+<div [formGroup]="registerGroup">
+    <mat-form-field>
+        <input matInput formControlName="username" placeholder="Username">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput formControlName="password" placeholder="Password">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput formControlName="email" placeholder="Email">
+    </mat-form-field>
+
+    <button mat-raised-button (click)="submit()">Register</button>
+</div>

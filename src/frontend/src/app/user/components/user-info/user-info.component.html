@@ -1,0 +1,11 @@
+<div *ngIf="user; else noUser">
+    {{user.username}}
+</div>
+
+<ng-template #noUser>
+    Loading...
+</ng-template>
+
+<button mat-raised-button (click)="openBalanceDialog()">Balance</button>
+
+<app-user-library></app-user-library>

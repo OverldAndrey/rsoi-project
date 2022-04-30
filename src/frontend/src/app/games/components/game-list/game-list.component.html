@@ -1,0 +1,5 @@
+<app-game-card
+    *ngFor="let game of (games.gamesObservable | async); trackBy:trackBy"
+    [game]="game"
+    [routerLink]="[game.id]"
+></app-game-card>
