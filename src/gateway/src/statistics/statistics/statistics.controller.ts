@@ -6,6 +6,7 @@ import {Request} from "express";
 import {Roles} from "../../auth/decorators/roles.decorator";
 import {Role} from "../../models/role.enum";
 import {ConfigService} from "@nestjs/config";
+import {RolesGuard} from "../../auth/guards/roles.guard";
 
 @Controller('')
 export class StatisticsController {
@@ -14,8 +15,8 @@ export class StatisticsController {
         private readonly config: ConfigService,
     ) {}
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.Admin)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Get('')
     public async getStatistics(
         @Query('service') service: string,

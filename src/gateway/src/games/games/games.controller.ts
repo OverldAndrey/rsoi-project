@@ -10,6 +10,7 @@ import {Roles} from "../../auth/decorators/roles.decorator";
 import {Role} from "../../models/role.enum"
 import {StatisticsService} from "../../statistics/statistics/statistics.service";
 import {ConfigService} from "@nestjs/config";
+import {RolesGuard} from "../../auth/guards/roles.guard";
 
 @Controller('')
 export class GamesController {
@@ -21,7 +22,7 @@ export class GamesController {
         private readonly config: ConfigService,
     ) {}
 
-    @Get()
+    @Get('')
     public getGames(@Query('page') page: number, @Query('size') size: number) {
         this.statistics.addStatistic({
             service: this.config.get('serviceName'),
@@ -43,8 +44,8 @@ export class GamesController {
         return firstValueFrom(this.games.getGameById(Number(id)));
     }
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.User)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Post(':id/buy')
     public async buyGame(
         @Param('id') id: string,

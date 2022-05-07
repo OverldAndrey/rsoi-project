@@ -11,6 +11,7 @@ import {Roles} from "../../auth/decorators/roles.decorator";
 import {Role} from "../../models/role.enum";
 import {StatisticsService} from "../../statistics/statistics/statistics.service";
 import {ConfigService} from "@nestjs/config";
+import {RolesGuard} from "../../auth/guards/roles.guard";
 
 @Controller('')
 export class UsersController {
@@ -22,8 +23,8 @@ export class UsersController {
         private readonly config: ConfigService,
     ) {}
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.User)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Get('')
     public async getUserInfo(@Req() req: Request, @Res() res: Response) {
         const userId = (req['verifiedUser'] as User).id;
@@ -53,8 +54,8 @@ export class UsersController {
         });
     }
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.User)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Get('library')
     public async getUserLibrary(@Req() req: Request, @Res() res: Response) {
         const userId = (req['verifiedUser'] as User).id;
@@ -91,8 +92,8 @@ export class UsersController {
         return res.status(200).send(libraryGames);
     }
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.User)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Get('wallet')
     public async getUserBalance(@Req() req: Request, @Res() res: Response) {
         const userId = (req['verifiedUser'] as User).id;
@@ -118,8 +119,8 @@ export class UsersController {
         return res.status(200).send({ amount: user.balance } as FillBalanceRequest);
     }
 
-    @UseGuards(AuthGuard('custom'))
     @Roles(Role.User)
+    @UseGuards(AuthGuard('custom'), RolesGuard)
     @Patch('wallet')
     public async fillUserBalance(
         @Req() req: Request,
