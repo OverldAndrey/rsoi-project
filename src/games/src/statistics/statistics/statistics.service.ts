@@ -13,22 +13,6 @@ export class StatisticsService {
         private readonly config: ConfigService,
     ) {}
 
-    public getStatistics(service: string, dateFrom?: string, dateTo?: string) {
-        let url = `/statistics?service=${service}`;
-
-        if (dateFrom) {
-            url += `&dateFrom=${dateFrom}`;
-        }
-
-        if (dateTo) {
-            url += `&dateTo=${dateTo}`;
-        }
-
-        return this.http.get<Statistic[]>(this.config.get('statisticsAddress') + url).pipe(
-            map(res => res.data),
-        );
-    }
-
     public addStatistic(stat: Partial<Statistic>) {
         const task = async () => {
             try {

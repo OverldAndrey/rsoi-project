@@ -9,6 +9,8 @@ import {TransactionsService} from "../transactions/transactions.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Roles} from "../../auth/decorators/roles.decorator";
 import {Role} from "../../models/role.enum";
+import {StatisticsService} from "../../statistics/statistics/statistics.service";
+import {ConfigService} from "@nestjs/config";
 
 @Controller('')
 export class UsersController {
@@ -16,6 +18,8 @@ export class UsersController {
         private readonly users: UsersService,
         private readonly games: GamesService,
         private readonly transactions: TransactionsService,
+        private readonly statistics: StatisticsService,
+        private readonly config: ConfigService,
     ) {}
 
     @UseGuards(AuthGuard('custom'))
@@ -26,7 +30,19 @@ export class UsersController {
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
+        this.statistics.addStatistic({
+            description: `Get user by id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         if (!user) {
+            this.statistics.addStatistic({
+                description: `Error 404: user with id ${userId} not found`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString()
+            });
+
             return res.sendStatus(404);
         }
 
@@ -45,7 +61,19 @@ export class UsersController {
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
+        this.statistics.addStatistic({
+            description: `Get user by id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         if (!user) {
+            this.statistics.addStatistic({
+                description: `Error 404: user with id ${userId} not found`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString()
+            });
+
             return res.sendStatus(404);
         }
 
@@ -53,6 +81,12 @@ export class UsersController {
             map(transactions => transactions.filter(t => t.gameId)),
             switchMap(transactions => forkJoin(transactions.map(t => this.games.getGameById(t.gameId))))
         ));
+
+        this.statistics.addStatistic({
+            description: `Got library for user with id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
 
         return res.status(200).send(libraryGames);
     }
@@ -65,7 +99,19 @@ export class UsersController {
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
+        this.statistics.addStatistic({
+            description: `Get user by id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         if (!user) {
+            this.statistics.addStatistic({
+                description: `Error 404: user with id ${userId} not found`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString()
+            });
+
             return res.sendStatus(404);
         }
 
@@ -84,7 +130,19 @@ export class UsersController {
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
+        this.statistics.addStatistic({
+            description: `Get user by id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         if (!user) {
+            this.statistics.addStatistic({
+                description: `Error 404: user with id ${userId} not found`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString()
+            });
+
             return res.sendStatus(404);
         }
 
@@ -93,7 +151,19 @@ export class UsersController {
             type: 'fill',
         }, userId));
 
+        this.statistics.addStatistic({
+            description: `Add transaction with balance fill for user with id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         await firstValueFrom(this.users.updateUser({ balance: user.balance + fillReq.amount }));
+
+        this.statistics.addStatistic({
+            description: `Fill balance for user with id ${userId}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
 
         return res.status(200).send({});
     }

@@ -6,9 +6,10 @@ import {ConfigModule} from "@nestjs/config";
 import {UsersModule} from "../users/users.module";
 import {PassportModule} from "@nestjs/passport";
 import {CustomStrategy} from "./strategies/jwt.strategy";
+import {StatisticsModule} from "../statistics/statistics.module";
 
 @Module({
-  imports: [HttpModule, ConfigModule, UsersModule, PassportModule],
+  imports: [HttpModule, ConfigModule, UsersModule, PassportModule, StatisticsModule],
   controllers: [AuthController],
   providers: [AuthService, CustomStrategy],
   exports: [AuthService],

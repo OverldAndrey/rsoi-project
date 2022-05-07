@@ -5,11 +5,13 @@ import {AuthGuard} from "@nestjs/passport";
 import {Request} from "express";
 import {Roles} from "../../auth/decorators/roles.decorator";
 import {Role} from "../../models/role.enum";
+import {ConfigService} from "@nestjs/config";
 
 @Controller('')
 export class StatisticsController {
     constructor(
         private readonly statistics: StatisticsService,
+        private readonly config: ConfigService,
     ) {}
 
     @UseGuards(AuthGuard('custom'))
@@ -21,10 +23,11 @@ export class StatisticsController {
         @Query('dateTo') dateTo: string,
         @Req() req: Request,
     ) {
-        await firstValueFrom(this.statistics.addStatistic({
+        this.statistics.addStatistic({
             description: `Get statistics for ${service} by date range from ${dateFrom} to ${dateTo}`,
-            service: 'statistics',
-        }));
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
 
         return firstValueFrom(this.statistics.getStatistics(service, dateFrom, dateTo));
     }

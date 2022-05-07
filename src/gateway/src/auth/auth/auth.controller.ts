@@ -7,16 +7,26 @@ import {RegisterRequest} from "../../models/register-request";
 import {User} from "../../models/user";
 import {Request, Response} from "express";
 import {AuthGuard} from "@nestjs/passport";
+import {StatisticsService} from "../../statistics/statistics/statistics.service";
+import {ConfigService} from "@nestjs/config";
 
 @Controller('')
 export class AuthController {
     constructor(
         private readonly auth: AuthService,
         private readonly users: UsersService,
+        private readonly statistics: StatisticsService,
+        private readonly config: ConfigService,
     ) {}
 
     @Post('login')
     public async login(@Body() login: UserLogin) {
+        this.statistics.addStatistic({
+            description: `Login user with username ${login.username}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
+
         return firstValueFrom(this.auth.createSession(login));
     }
 
@@ -24,6 +34,12 @@ export class AuthController {
     @Delete('logout')
     public async logout(@Req() req: Request) {
         const session = await firstValueFrom(this.auth.getSessionByToken(req['token']));
+
+        this.statistics.addStatistic({
+            description: `Delete session with id ${session.id}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
 
         return firstValueFrom(this.auth.deleteSession(session.id));
     }
@@ -35,7 +51,19 @@ export class AuthController {
         try {
             const prevUser = await firstValueFrom(this.users.getUserByName(user.username));
 
+            this.statistics.addStatistic({
+                description: `Get user by username ${user.username}`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString()
+            });
+
             if (prevUser) {
+                this.statistics.addStatistic({
+                    description: `Error 409: user with username ${user.username} already exists`,
+                    service: this.config.get('serviceName'),
+                    timestamp: new Date().toISOString()
+                });
+
                 return res.sendStatus(409);
             }
         } catch (e) {
@@ -44,6 +72,12 @@ export class AuthController {
                 throw e;
             }
         }
+
+        this.statistics.addStatistic({
+            description: `Create new user with username ${user.username}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString()
+        });
 
         await firstValueFrom(this.users.createUser(user));
 

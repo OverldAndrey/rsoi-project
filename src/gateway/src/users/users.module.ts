@@ -5,9 +5,10 @@ import { UsersController } from './users/users.controller';
 import { HttpModule } from "@nestjs/axios";
 import { ConfigModule } from "@nestjs/config";
 import { GamesModule } from "../games/games.module";
+import {StatisticsModule} from "../statistics/statistics.module";
 
 @Module({
-  imports: [HttpModule, ConfigModule, forwardRef(() => GamesModule)],
+  imports: [HttpModule, ConfigModule, forwardRef(() => GamesModule), StatisticsModule],
   providers: [TransactionsService, UsersService],
   controllers: [UsersController],
   exports: [TransactionsService, UsersService],
