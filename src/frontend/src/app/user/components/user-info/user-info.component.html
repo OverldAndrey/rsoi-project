@@ -1,11 +1,38 @@
-<div *ngIf="user; else noUser">
-    {{user.username}}
+<div class="user-wrapper">
+    <div *ngIf="user; else noUser" class="user-name-container">
+        <button mat-icon-button class="return-button" routerLink="/games"><mat-icon>arrow_back</mat-icon></button>
+        <span class="flex-splitter"></span>
+        <span class="user-name">{{user.username}}</span>
+    </div>
+    <div *ngIf="user" class="user-info-container">
+        <span class="flex-splitter"></span>
+        <span class="user-email">{{user.email}}</span>
+    </div>
+    <div *ngIf="user" class="user-balance-container">
+        <span class="flex-splitter"></span>
+        <button
+            mat-flat-button
+            (click)="openBalanceDialog()"
+            color="primary"
+            class="user-balance-button"
+        >
+            Посмотреть баланс
+        </button>
+        <button
+            mat-button
+            (click)="logout()"
+            color="primary"
+            class="user-balance-button"
+        >
+            Выйти из аккаунта
+        </button>
+    </div>
 </div>
 
 <ng-template #noUser>
-    Loading...
+    <div class="no-user-wrapper">
+        <span class="no-user">Loading...</span>
+    </div>
 </ng-template>
-
-<button mat-raised-button (click)="openBalanceDialog()">Balance</button>
 
 <app-user-library></app-user-library>

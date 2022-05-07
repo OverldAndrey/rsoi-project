@@ -5,6 +5,8 @@ import { UserBalanceDialogComponent } from './components/user-balance-dialog/use
 import { UserLibraryComponent } from './components/user-library/user-library.component';
 import {MaterialProxyModule} from "../material-proxy/material-proxy.module";
 import {ReactiveFormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
+import {GamesModule} from "../games/games.module";
 
 
 
@@ -17,7 +19,9 @@ import {ReactiveFormsModule} from "@angular/forms";
     imports: [
         CommonModule,
         MaterialProxyModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterModule,
+        GamesModule
     ]
 })
 export class UserModule { }

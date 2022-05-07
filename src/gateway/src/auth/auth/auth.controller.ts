@@ -1,11 +1,12 @@
-import {Body, Controller, Delete, Post, Res} from '@nestjs/common';
+import {Body, Controller, Delete, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 import {UserLogin} from "../../models/user-login";
 import {firstValueFrom} from "rxjs";
 import {UsersService} from "../../users/users/users.service";
 import {RegisterRequest} from "../../models/register-request";
 import {User} from "../../models/user";
-import {Response} from "express";
+import {Request, Response} from "express";
+import {AuthGuard} from "@nestjs/passport";
 
 @Controller('')
 export class AuthController {
@@ -19,12 +20,17 @@ export class AuthController {
         return firstValueFrom(this.auth.createSession(login));
     }
 
+    @UseGuards(AuthGuard('custom'))
     @Delete('logout')
-    public logout() {}
+    public async logout(@Req() req: Request) {
+        const session = await firstValueFrom(this.auth.getSessionByToken(req['token']));
+
+        return firstValueFrom(this.auth.deleteSession(session.id));
+    }
 
     @Post('register')
     public async register(@Body() body: RegisterRequest, @Res() res: Response) {
-        const user = { ...body, balance: 0 } as Partial<User>;
+        const user = { ...body, balance: 0, role: 'User' } as Partial<User>;
 
         try {
             const prevUser = await firstValueFrom(this.users.getUserByName(user.username));

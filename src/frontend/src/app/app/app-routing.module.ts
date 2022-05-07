@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { RegisterPageComponent } from '../auth/components/register-page/register-page.component';
 import { RouterModule, Routes } from '@angular/router';
 import { UserInfoComponent } from '../user/components/user-info/user-info.component';
+import {AdminComponent} from "../admin/components/admin/admin.component";
 
 const routes: Routes = [
     {
@@ -31,6 +32,10 @@ const routes: Routes = [
     {
         path: 'me',
         component: UserInfoComponent,
+    },
+    {
+        path: 'admin',
+        component: AdminComponent,
     },
     {
         path: 'not-found',

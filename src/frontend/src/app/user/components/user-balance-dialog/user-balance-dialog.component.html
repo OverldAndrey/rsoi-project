@@ -1,5 +1,7 @@
-{{balance}}
-<mat-form-field>
-    <input matInput [formControl]="fillBalanceControl" type="number">
-</mat-form-field>
-<button mat-raised-button (click)="fillBalance()">Fill</button>
+<mat-dialog-content class="balance-container">
+    <span class="balance-value">Текущий баланс: {{balance}} руб.</span>
+    <mat-form-field appearance="outline">
+        <input matInput [formControl]="fillBalanceControl" type="number">
+    </mat-form-field>
+    <button mat-flat-button (click)="fillBalance()" color="primary">Fill</button>
+</mat-dialog-content>

@@ -30,7 +30,7 @@ export class StatisticsService {
     public addStatistic(stat: Partial<Statistic>) {
         const url = '/statistics';
 
-        return this.http.post<{}>(this.config.get('statisticsAddress') + url).pipe(
+        return this.http.post<{}>(this.config.get('statisticsAddress') + url, stat).pipe(
             map(res => res.data),
         );
     }

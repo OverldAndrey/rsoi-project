@@ -1,9 +1,13 @@
-import {Controller, Get, Param, Post, Res, Headers, Query} from '@nestjs/common';
+import {Controller, Get, Param, Post, Res, Headers, Query, UseGuards, Req} from '@nestjs/common';
 import {firstValueFrom} from "rxjs";
 import {GamesService} from "./games.service";
-import {Response} from "express";
+import {Request, Response} from "express";
 import {TransactionsService} from "../../users/transactions/transactions.service";
 import {UsersService} from "../../users/users/users.service";
+import {AuthGuard} from "@nestjs/passport";
+import {User} from "../../models/user";
+import {Roles} from "../../auth/decorators/roles.decorator";
+import {Role} from "../../models/role.enum"
 
 @Controller('')
 export class GamesController {
@@ -23,10 +27,12 @@ export class GamesController {
         return firstValueFrom(this.games.getGameById(Number(id)));
     }
 
+    @UseGuards(AuthGuard('custom'))
+    @Roles(Role.User)
     @Post(':id/buy')
     public async buyGame(
         @Param('id') id: string,
-        @Headers('Authorization') authHeader: string,
+        @Req() req: Request,
         @Res() res: Response
     ) {
         const gameId = Number(id);
@@ -36,8 +42,7 @@ export class GamesController {
             return res.sendStatus(404);
         }
 
-        // TODO: Extract user id from token
-        const userId = Number(authHeader);
+        const userId = (req['verifiedUser'] as User).id;
 
         const user = await firstValueFrom(this.users.getUser(userId));
         console.log(user);

@@ -11,6 +11,7 @@ import { GamesModule } from '../games/games.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptor } from '../auth/interceptors/jwt.interceptor';
 import { UserModule } from '../user/user.module';
+import {AdminModule} from "../admin/admin.module";
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { UserModule } from '../user/user.module';
         GamesModule,
         AuthModule,
         UserModule,
+        AdminModule,
         BrowserAnimationsModule,
     ],
     providers: [

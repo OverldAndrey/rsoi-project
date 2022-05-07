@@ -1,12 +1,10 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { StatisticsService } from "./statistics.service";
-import { Statistic } from "../../entities/statistic";
+import { StatisticsService } from './statistics.service';
+import { Statistic } from '../../entities/statistic';
 
 @Controller('statistics')
 export class StatisticsController {
-    constructor(
-        private readonly statistics: StatisticsService,
-    ) {}
+    constructor(private readonly statistics: StatisticsService) {}
 
     @Get('')
     public async getStatistics(
@@ -23,7 +21,9 @@ export class StatisticsController {
 
     @Post('')
     public async addStatistic(@Body() stat: Partial<Statistic>) {
-        await this.statistics.addStatistic(stat);
+        console.log(stat);
+
+        await this.statistics.addStatistic( { ...stat, timestamp: new Date() });
 
         return {};
     }

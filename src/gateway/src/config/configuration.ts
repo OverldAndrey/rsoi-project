@@ -5,4 +5,5 @@ export default () => ({
   transactionsAddress: 'http://localhost:8082',
   authAddress: 'http://localhost:8083',
   statisticsAddress: 'http://localhost:8084',
+  serviceName: 'gateway',
 });

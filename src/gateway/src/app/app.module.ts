@@ -7,6 +7,7 @@ import configuration from "../config/configuration";
 import {GamesModule} from "../games/games.module";
 import {AuthModule} from "../auth/auth.module";
 import {UsersModule} from "../users/users.module";
+import {StatisticsModule} from "../statistics/statistics.module";
 
 const routes: Routes = [
     {
@@ -23,6 +24,10 @@ const routes: Routes = [
             {
                 path: '/auth',
                 module: AuthModule,
+            },
+            {
+                path: '/statistics',
+                module: StatisticsModule,
             }
         ]
     }
@@ -35,6 +40,7 @@ const routes: Routes = [
         GamesModule,
         AuthModule,
         UsersModule,
+        StatisticsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

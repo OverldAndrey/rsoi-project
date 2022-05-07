@@ -12,6 +12,9 @@ export class GameCardComponent {
     @Input()
     public game!: Game;
 
+    @Input()
+    public displayPrice = true;
+
     constructor() { }
 
 }

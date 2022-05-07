@@ -6,6 +6,9 @@ import { GamesPageComponent } from './components/games-page/games-page.component
 import { NgModule } from '@angular/core';
 import {RouterModule} from "@angular/router";
 import {MaterialProxyModule} from "../material-proxy/material-proxy.module";
+import { TruncatePipe } from './pipes/truncate.pipe';
+import { PricePipe } from './pipes/price.pipe';
+import { GamesToolbarComponent } from './components/games-toolbar/games-toolbar.component';
 
 
 
@@ -15,11 +18,17 @@ import {MaterialProxyModule} from "../material-proxy/material-proxy.module";
         GameDetailedComponent,
         GameListComponent,
         GameCardComponent,
+        TruncatePipe,
+        PricePipe,
+        GamesToolbarComponent,
     ],
     imports: [
         CommonModule,
         RouterModule,
         MaterialProxyModule,
     ],
+    exports: [
+        GameCardComponent
+    ]
 })
 export class GamesModule { }

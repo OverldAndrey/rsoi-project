@@ -9,7 +9,11 @@ export class AuthService {
         @InjectRepository(Session) private readonly sessionsRepository: Repository<Session>,
     ) {}
 
-    public createOrUpdateSession(session: Partial<Session>) {
+    public async getSessionByToken(token: string) {
+        return this.sessionsRepository.findOneBy({ token });
+    }
+
+    public async createOrUpdateSession(session: Partial<Session>) {
         return this.sessionsRepository.save(session);
     }
 

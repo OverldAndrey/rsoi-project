@@ -1,13 +1,17 @@
-<div [formGroup]="authForm">
-    <mat-form-field>
-        <input matInput formControlName="username" placeholder="Username">
+<div [formGroup]="authForm" class="auth-form-container">
+    <mat-form-field class="auth-form-field" appearance="outline">
+        <mat-label>Имя пользователя</mat-label>
+        <input matInput formControlName="username">
     </mat-form-field>
 
-    <mat-form-field>
-        <input matInput formControlName="password" placeholder="Password">
+    <mat-form-field class="auth-form-field" appearance="outline">
+        <mat-label>Пароль</mat-label>
+        <input matInput formControlName="password" type="password">
     </mat-form-field>
 
-    <button mat-raised-button (click)="login()">Login</button>
+    <div class="auth-form-controls">
+        <button mat-flat-button (click)="login()" color="primary">Войти</button>
 
-    <a routerLink="/auth/register">Register</a>
+        <a mat-button routerLink="/auth/register">Зарегистрироваться</a>
+    </div>
 </div>

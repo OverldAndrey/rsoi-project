@@ -1,11 +1,14 @@
-import {Body, Controller, Get, Headers, Patch, Res} from '@nestjs/common';
+import {Body, Controller, Get, Headers, Patch, Req, Res, UseGuards} from '@nestjs/common';
 import {UsersService} from "./users.service";
 import {User} from "../../models/user";
 import {firstValueFrom, forkJoin, map, switchMap} from "rxjs";
-import {Response} from "express";
+import {Request, Response} from "express";
 import {FillBalanceRequest} from "../../models/fill-balance-request";
 import {GamesService} from "../../games/games/games.service";
 import {TransactionsService} from "../transactions/transactions.service";
+import {AuthGuard} from "@nestjs/passport";
+import {Roles} from "../../auth/decorators/roles.decorator";
+import {Role} from "../../models/role.enum";
 
 @Controller('')
 export class UsersController {
@@ -15,10 +18,11 @@ export class UsersController {
         private readonly transactions: TransactionsService,
     ) {}
 
+    @UseGuards(AuthGuard('custom'))
+    @Roles(Role.User)
     @Get('')
-    public async getUserInfo(@Headers('Authorization') authHeader: string, @Res() res: Response) {
-        // TODO: Extract from header
-        const userId = Number(authHeader);
+    public async getUserInfo(@Req() req: Request, @Res() res: Response) {
+        const userId = (req['verifiedUser'] as User).id;
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
@@ -33,10 +37,11 @@ export class UsersController {
         });
     }
 
+    @UseGuards(AuthGuard('custom'))
+    @Roles(Role.User)
     @Get('library')
-    public async getUserLibrary(@Headers('Authorization') authHeader: string, @Res() res: Response) {
-        // TODO: Extract from header
-        const userId = Number(authHeader);
+    public async getUserLibrary(@Req() req: Request, @Res() res: Response) {
+        const userId = (req['verifiedUser'] as User).id;
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
@@ -52,10 +57,11 @@ export class UsersController {
         return res.status(200).send(libraryGames);
     }
 
+    @UseGuards(AuthGuard('custom'))
+    @Roles(Role.User)
     @Get('wallet')
-    public async getUserBalance(@Headers('Authorization') authHeader: string, @Res() res: Response) {
-        // TODO: Extract from header
-        const userId = Number(authHeader);
+    public async getUserBalance(@Req() req: Request, @Res() res: Response) {
+        const userId = (req['verifiedUser'] as User).id;
 
         const user = await firstValueFrom(this.users.getUser(userId));
 
@@ -66,14 +72,15 @@ export class UsersController {
         return res.status(200).send({ amount: user.balance } as FillBalanceRequest);
     }
 
+    @UseGuards(AuthGuard('custom'))
+    @Roles(Role.User)
     @Patch('wallet')
     public async fillUserBalance(
-        @Headers('Authorization') authHeader: string,
+        @Req() req: Request,
         @Body() fillReq: FillBalanceRequest,
         @Res() res: Response
     ) {
-        // TODO: Extract from header
-        const userId = Number(authHeader);
+        const userId = (req['verifiedUser'] as User).id;
 
         const user = await firstValueFrom(this.users.getUser(userId));
 

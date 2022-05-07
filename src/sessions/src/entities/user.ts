@@ -14,6 +14,9 @@ export class User {
     @Column({ type: 'varchar', length: 256, nullable: false })
     password: string;
 
+    @Column({ type: 'varchar', length: 16, nullable: false, default: 'User' })
+    role: 'User' | 'Admin';
+
     @Column({ type: 'float', nullable: false, default: 0 })
     balance: number;
 }
