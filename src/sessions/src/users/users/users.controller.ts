@@ -101,6 +101,8 @@ export class UsersController {
             timestamp: new Date().toISOString()
         });
 
+        user.password = this.users.createPwdHash(user.password);
+
         return res.status(200).send(await this.users.addOrUpdateOne(user));
     }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Res } from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Post, Res} from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from '../../entities/transaction';
 import { Response } from 'express';
@@ -51,5 +51,18 @@ export class TransactionsController {
         });
 
         return res.status(200).send(newTransaction);
+    }
+
+    @Delete(':id')
+    public async removeTransaction(@Param('id') id: string, @Res() res: Response) {
+        this.statistics.addStatistic({
+            service: this.config.get('serviceName'),
+            description: `Delete transaction with id ${id}`,
+            timestamp: new Date().toISOString()
+        });
+
+        await this.transactions.deleteOne(Number(id));
+
+        return res.status(200).send({});
     }
 }

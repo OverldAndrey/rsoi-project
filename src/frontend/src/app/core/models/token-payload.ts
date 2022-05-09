@@ -3,4 +3,5 @@ export interface TokenPayload {
     rol: 'Admin' | 'User';
     iat: number;
     exp: number;
+    name: string;
 }

@@ -49,6 +49,7 @@ export class JwtInterceptor implements HttpInterceptor {
         return next.handle(updatedRequest).pipe(
             catchError((error: HttpErrorResponse) => {
                 if (error.status === HttpStatusCode.Unauthorized || error.status === HttpStatusCode.Forbidden) {
+                    this.auth.removeSession();
                     this.router.navigate(['auth']).catch(err => {
                         // eslint-disable-next-line no-console
                         console.error(err);

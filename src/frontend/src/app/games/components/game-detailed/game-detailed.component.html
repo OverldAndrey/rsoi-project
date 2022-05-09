@@ -11,7 +11,12 @@
     </div>
     <div class="game-price-container">
         <span class="game-price">{{game?.price}} руб.</span>
-        <button mat-flat-button [disabled]="!auth.session" (click)="buy()" color="primary">Купить</button>
+        <button
+            mat-flat-button
+            [disabled]="!auth.session || (auth.roleObservable | async) !== 'User'"
+            (click)="buy()"
+            color="primary"
+        >Купить</button>
     </div>
 </div>
 <div class="game-description-container">

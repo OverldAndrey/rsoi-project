@@ -17,4 +17,8 @@ export class TransactionsService {
     public async addOne(transaction: Partial<Transaction>) {
         return this.transactionsRepository.save(transaction);
     }
+
+    public async deleteOne(id: number) {
+        return this.transactionsRepository.delete({ id });
+    }
 }

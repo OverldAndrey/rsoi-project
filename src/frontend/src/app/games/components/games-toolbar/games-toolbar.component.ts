@@ -1,7 +1,6 @@
 import { AuthService } from '../../../auth/services/auth.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map } from 'rxjs';
-import { Router } from '@angular/router';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +24,6 @@ export class GamesToolbarComponent {
 
     constructor(
         public readonly auth: AuthService,
-        private readonly router: Router,
     ) { }
 
 }

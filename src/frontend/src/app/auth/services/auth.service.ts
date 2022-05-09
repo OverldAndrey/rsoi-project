@@ -37,6 +37,10 @@ export class AuthService {
         map(payload => payload?.rol),
     );
 
+    public readonly nameObservable = this.decodedTokenObservable.pipe(
+        map(payload => payload?.name),
+    );
+
     public get session() {
         return this.sessionSubject.value;
     }
@@ -63,8 +67,16 @@ export class AuthService {
     }
 
     public async logout() {
-        await firstValueFrom(this.authApi.logout());
+        try {
+            await firstValueFrom(this.authApi.logout());
+        } catch (err: unknown) {
+            console.log(err);
+        }
 
+        this.removeSession();
+    }
+
+    public removeSession() {
         localStorage.removeItem(this.SESSION_STORAGE_KEY);
         this.sessionSubject.next(null);
     }

@@ -41,7 +41,7 @@ export class AuthController {
             return res.sendStatus(404);
         }
 
-        if (user.password !== login.password) {
+        if (user.password !== this.users.createPwdHash(login.password)) {
             this.statistics.addStatistic({
                 service: this.config.get('serviceName'),
                 description: `Error 401: user by username ${login.username} provided incorrect password`,
@@ -53,7 +53,7 @@ export class AuthController {
 
         const session = await this.auth.createOrUpdateSession({
             user: user,
-            token: this.jwt.sign({ uid: user.id, rol: user.role }, {
+            token: this.jwt.sign({ uid: user.id, rol: user.role, name: user.username }, {
                 expiresIn: 3600,
             }),
             createDate: new Date(),

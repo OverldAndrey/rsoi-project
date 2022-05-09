@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entities/user';
 import { Repository } from 'typeorm';
+import * as crypto from "crypto";
 
 @Injectable()
 export class UsersService {
@@ -22,5 +23,9 @@ export class UsersService {
 
     public async addOrUpdateOne(user: Partial<User>) {
         return this.usersRepository.save(user);
+    }
+
+    public createPwdHash(password: string) {
+        return crypto.createHash('md5').update(password).digest('hex');
     }
 }

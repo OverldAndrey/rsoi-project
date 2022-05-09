@@ -1,4 +1,14 @@
-import {Body, Controller, Delete, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    ConflictException,
+    Controller,
+    Delete,
+    Post,
+    Req,
+    Res,
+    UnauthorizedException,
+    UseGuards
+} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 import {UserLogin} from "../../models/user-login";
 import {firstValueFrom} from "rxjs";
@@ -20,14 +30,36 @@ export class AuthController {
     ) {}
 
     @Post('login')
-    public async login(@Body() login: UserLogin) {
+    public async login(@Body() login: UserLogin, @Res() res: Response) {
+        const user = await this.users.getUserByName(login.username);
+
         this.statistics.addStatistic({
-            description: `Login user with username ${login.username}`,
             service: this.config.get('serviceName'),
+            description: `Get user by username ${login.username}`,
             timestamp: new Date().toISOString()
         });
 
-        return firstValueFrom(this.auth.createSession(login));
+        if (!user) {
+            this.statistics.addStatistic({
+                service: this.config.get('serviceName'),
+                description: `Error 404: user by username ${login.username} not found`,
+                timestamp: new Date().toISOString()
+            });
+
+            return res.status(401).send(new UnauthorizedException());
+        }
+
+        this.statistics.addStatistic({
+            description: `Login user with username ${login.username}`,
+            service: this.config.get('serviceName'),
+            timestamp: new Date().toISOString(),
+        });
+
+        try {
+            return res.status(200).send(await firstValueFrom(this.auth.createSession(login)));
+        } catch (e) {
+            return res.status(401).send(new UnauthorizedException());
+        }
     }
 
     @UseGuards(AuthGuard('custom'))
@@ -64,7 +96,7 @@ export class AuthController {
                     timestamp: new Date().toISOString()
                 });
 
-                return res.sendStatus(409);
+                return res.status(409).send(new ConflictException());
             }
         } catch (e) {
             console.log(e.toJSON());
@@ -81,6 +113,6 @@ export class AuthController {
 
         await firstValueFrom(this.users.createUser(user));
 
-        return res.sendStatus(200);
+        return res.status(200).send({});
     }
 }

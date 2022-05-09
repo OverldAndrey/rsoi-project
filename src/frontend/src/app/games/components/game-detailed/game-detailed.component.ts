@@ -1,8 +1,8 @@
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../auth/services/auth.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Game } from '../../../core/models/game';
 import { GamesService } from '../../services/games.service';
-import {AuthService} from "../../../auth/services/auth.service";
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,4 +36,5 @@ export class GameDetailedComponent implements OnInit {
 
         await this.games.buyGame(this.game.id);
     }
+
 }
