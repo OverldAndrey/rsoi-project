@@ -1,0 +1,187 @@
+name: RSOI CW Workflow
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  games:
+    name: Games
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/games
+          npm ci
+
+      - name: Build App
+        run:  |
+          cd ./src/games
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/games
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-flights-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/flight
+#          usedocker: true
+          
+  sessions:
+    name: Sessions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/sessions
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/sessions
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/ticket
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-tickets-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/ticket
+#          usedocker: true
+          
+  transactions:
+    name: Transactions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/transactions
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/transactions
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/bonus
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-bonuses-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/bonus
+#          usedocker: true
+          
+  gateway:
+    name: Gateway
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/gateway
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/gateway
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/gateway
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-gateway-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/gateway
+#          usedocker: true
+          
+#  test:
+#    name: Autograding
+#    needs: [tickets, flights, bonuses, gateway]
+#    runs-on: self-hosted
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#
+#      # TODO build, test and deploy project
+#
+#      - name: Run API Tests
+#        uses: matt-ball/newman-action@master
+#        with:
+#          # TODO insert your <Variant> and <ServiceName>
+#          collection: v1/postman/[rsoi] postman_collection.json
+#          environment: v1/postman/[rsoi][heroku] postman_environment.json
+#          delayRequest: 3000
+#          reporters: '[ "cli" ]'
+#          envVar: '[{ "key":"serviceName", "value":"rsoi-lab2-bonuses-ignatev" }, { "key":"herokuApiToken", "value":"${{secrets.HEROKU_API_KEY}}" }]'
+#
+#      - uses: education/autograding@v1
+#        id: autograder
+#        continue-on-error: true
