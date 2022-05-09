@@ -122,6 +122,44 @@ jobs:
 #          heroku_email: andrey3000.99@mail.ru
 #          appdir: src/bonus
 #          usedocker: true
+
+  statistics:
+    name: Statistics
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/statistics
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/statistics
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/bonus
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-bonuses-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/bonus
+#          usedocker: true
           
   gateway:
     name: Gateway
@@ -144,6 +182,44 @@ jobs:
       - name: Build App
         run: |
           cd ./src/gateway
+          npm run build
+
+#      - name: Test App
+#        run: |
+#          cd ./src/gateway
+#          npm run test
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-gateway-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/gateway
+#          usedocker: true
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/frontend
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/frontend
           npm run build
 
 #      - name: Test App
