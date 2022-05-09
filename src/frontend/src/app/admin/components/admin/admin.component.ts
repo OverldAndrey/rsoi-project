@@ -4,6 +4,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { defaultTrackBy } from '../../../core/utils/default-track-by';
 import { FormBuilder } from '@angular/forms';
 import { ServiceType, serviceTypes, Statistic } from '../../../core/models/statistic';
+import {AuthService} from "../../../auth/services/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +32,8 @@ export class AdminComponent {
     constructor(
         public readonly admin: AdminService,
         private readonly fb: FormBuilder,
+        private readonly auth: AuthService,
+        private readonly router: Router,
     ) { }
 
     public async getStats() {
@@ -41,6 +45,11 @@ export class AdminComponent {
             .getStatistics(service, dateFrom ?? undefined, dateTo ?? undefined)))).flat();
 
         this.statsSubject.next(stats);
+    }
+
+    public async logout() {
+        await this.auth.logout();
+        await this.router.navigateByUrl('/auth/login');
     }
 
 }

@@ -16,7 +16,8 @@
         <mat-date-range-picker #datePicker></mat-date-range-picker>
     </mat-form-field>
 
-    <button mat-raised-button (click)="getStats()" class="stats-button">Показать</button>
+    <button mat-flat-button (click)="getStats()" class="stats-button" color="primary">Показать</button>
+    <button mat-button (click)="logout()" class="stats-button" color="primary">Выйти из аккаунта</button>
 </div>
 
 <div class="stats-table-container">

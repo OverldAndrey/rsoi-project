@@ -1,5 +1,5 @@
 <span class="flex-splitter"></span>
-<div class="user-profile" *ngIf="auth.session; else notAuthed" routerLink="/me">
+<div class="user-profile" *ngIf="auth.session; else notAuthed" [routerLink]="userRoute | async">
     <span>{{auth.session.userId}}</span>
     <div class="user-image"></div>
 </div>

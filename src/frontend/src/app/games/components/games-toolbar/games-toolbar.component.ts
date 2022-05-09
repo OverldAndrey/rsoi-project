@@ -1,5 +1,7 @@
 import { AuthService } from '../../../auth/services/auth.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { map } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,8 +11,21 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class GamesToolbarComponent {
 
+    public readonly userRoute = this.auth.roleObservable.pipe(
+        map(role => {
+            if (role === 'User') {
+                return ['/me'];
+            } else if (role === 'Admin') {
+                return ['/admin'];
+            }
+
+            return ['/games'];
+        }),
+    );
+
     constructor(
         public readonly auth: AuthService,
+        private readonly router: Router,
     ) { }
 
 }

@@ -15,7 +15,13 @@ export class CustomStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: Request) {
-        const token = payload.header('Authorization').replace('Bearer ', '');
+        const header = payload.header('Authorization');
+
+        if (!header) {
+            throw new UnauthorizedException();
+        }
+
+        const token = header.replace('Bearer ', '');
 
         try {
             payload['verifiedUser'] = await firstValueFrom(this.auth.validate(token));
