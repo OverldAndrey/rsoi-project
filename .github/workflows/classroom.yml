@@ -72,7 +72,7 @@ jobs:
 
       - name: Test App
         run: |
-          cd ./src/ticket
+          cd ./src/sessions
           npm run test
 #
 #      - name: Deploy App
@@ -110,7 +110,7 @@ jobs:
 
       - name: Test App
         run: |
-          cd ./src/bonus
+          cd ./src/transactions
           npm run test
 #
 #      - name: Deploy App
@@ -148,7 +148,7 @@ jobs:
 
       - name: Test App
         run: |
-          cd ./src/bonus
+          cd ./src/statistics
           npm run test
 #
 #      - name: Deploy App
