@@ -32,10 +32,10 @@ jobs:
           cd ./src/games
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/games
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/games
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -70,10 +70,10 @@ jobs:
           cd ./src/sessions
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/ticket
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/ticket
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -108,10 +108,10 @@ jobs:
           cd ./src/transactions
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/bonus
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/bonus
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -146,10 +146,10 @@ jobs:
           cd ./src/statistics
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/bonus
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/bonus
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -184,10 +184,10 @@ jobs:
           cd ./src/gateway
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/gateway
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/gateway
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -222,10 +222,10 @@ jobs:
           cd ./src/frontend
           npm run build
 
-#      - name: Test App
-#        run: |
-#          cd ./src/gateway
-#          npm run test
+      - name: Test App
+        run: |
+          cd ./src/frontend
+          npm run test
 #
 #      - name: Deploy App
 #        id: heroku-deploy

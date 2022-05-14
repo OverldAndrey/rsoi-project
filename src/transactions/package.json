@@ -9,6 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "postbuild": "node -v && node scripts/postbuild.js && cd dist && npm ci --production",
+    "build:docker": "npm run build && docker build -t rsoi-transactions .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

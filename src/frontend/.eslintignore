@@ -6,4 +6,4 @@ fixtures
 coverage
 __snapshots__
 karma.conf.js
-**/*.spec.ts
+**.spec.ts
