@@ -1,16 +1,12 @@
 {
    "type": "postgres",
-   "host": "ec2-54-195-141-170.eu-west-1.compute.amazonaws.com",
+   "host": "postgres",
    "port": 5432,
-   "username": "fcpqqjhphqjqkp",
-   "password": "1467e2e7cd12144ecafcd21cc363c1dde9afb2fa28cb73588b3858db757870b9",
-   "database": "dcn1tc8vjkkrkk",
+   "username": "program",
+   "password": "test",
+   "database": "games",
    "synchronize": true,
    "logging": false,
-   "ssl": {
-      "require": true,
-      "rejectUnauthorized": false
-   },
    "entities": [
       "entities/**/*.js"
    ],

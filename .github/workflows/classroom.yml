@@ -36,6 +36,23 @@ jobs:
         run: |
           cd ./src/games
           npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/games
+          file: ./src/games/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-games:latest
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -74,6 +91,23 @@ jobs:
         run: |
           cd ./src/sessions
           npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/sessions
+          file: ./src/sessions/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-sessions:latest
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -112,6 +146,23 @@ jobs:
         run: |
           cd ./src/transactions
           npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/transactions
+          file: ./src/transactions/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-transactions:latest
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -150,6 +201,23 @@ jobs:
         run: |
           cd ./src/statistics
           npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/statistics
+          file: ./src/statistics/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-statistics:latest
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -188,6 +256,23 @@ jobs:
         run: |
           cd ./src/gateway
           npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/gateway
+          file: ./src/gateway/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-gateway:latest
 #
 #      - name: Deploy App
 #        id: heroku-deploy
@@ -227,15 +312,32 @@ jobs:
           cd ./src/frontend
           npm run test
 
-      - name: Deploy App
-        id: heroku-deploy
-        uses: akhileshns/heroku-deploy@v3.12.12
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: rsoi-cw-frontend-ignatev
-          heroku_email: andrey3000.99@mail.ru
-          appdir: src/frontend
-          usedocker: true
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/frontend
+          file: ./src/frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-frontend:latest
+
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-cw-frontend-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/frontend
+#          usedocker: true
           
 #  test:
 #    name: Autograding
