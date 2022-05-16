@@ -9,7 +9,7 @@ import {
     UseGuards,
     Req,
     BadRequestException,
-    NotFoundException, ServiceUnavailableException, ForbiddenException, UnprocessableEntityException
+    NotFoundException, ServiceUnavailableException, ForbiddenException, UnprocessableEntityException, ConflictException
 } from '@nestjs/common';
 import {firstValueFrom} from "rxjs";
 import {GamesService} from "./games.service";
@@ -134,6 +134,24 @@ export class GamesController {
 
         let transaction: Transaction;
         try {
+            const userTransactions = await firstValueFrom(this.transactions.getUsersTransactions(userId));
+
+            this.statistics.addStatistic({
+                description: `Get transactions for user with id ${userId}`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString(),
+            });
+
+            if (userTransactions.some(t => t.gameId === game.id)) {
+                this.statistics.addStatistic({
+                    description: `Error 409: User with id ${userId} already has game with id ${game.id}`,
+                    service: this.config.get('serviceName'),
+                    timestamp: new Date().toISOString(),
+                });
+
+                return res.status(409).send(new ConflictException());
+            }
+
             transaction = await firstValueFrom(this.transactions.addTransaction({
                 gameId,
                 sum: game.price,

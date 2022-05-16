@@ -226,16 +226,16 @@ jobs:
         run: |
           cd ./src/frontend
           npm run test
-#
-#      - name: Deploy App
-#        id: heroku-deploy
-#        uses: akhileshns/heroku-deploy@v3.12.12
-#        with:
-#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-#          heroku_app_name: rsoi-lab2-gateway-ignatev
-#          heroku_email: andrey3000.99@mail.ru
-#          appdir: src/gateway
-#          usedocker: true
+
+      - name: Deploy App
+        id: heroku-deploy
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: rsoi-cw-frontend-ignatev
+          heroku_email: andrey3000.99@mail.ru
+          appdir: src/frontend
+          usedocker: true
           
 #  test:
 #    name: Autograding
