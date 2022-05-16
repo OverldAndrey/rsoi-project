@@ -60,14 +60,26 @@ export class GamesController {
     }
 
     @Get(':id')
-    public getGameById(@Param('id') id: string) {
+    public async getGameById(@Param('id') id: string, @Res() res: Response) {
         this.statistics.addStatistic({
             service: this.config.get('serviceName'),
             description: `Get a game by id ${id}`,
             timestamp: new Date().toISOString(),
         });
 
-        return firstValueFrom(this.games.getGameById(Number(id)));
+        const game = await firstValueFrom(this.games.getGameById(Number(id)));
+
+        if (!game || game.id === 0) {
+            this.statistics.addStatistic({
+                service: this.config.get('serviceName'),
+                description: `Error 404: game with id ${id} not found`,
+                timestamp: new Date().toISOString(),
+            });
+
+            return res.status(404).send(new NotFoundException());
+        }
+
+        return res.status(200).send(game);
     }
 
     @Roles(Role.User)

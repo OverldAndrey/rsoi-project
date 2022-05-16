@@ -1,8 +1,8 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
-    Headers,
     NotFoundException,
     Patch,
     Req,
@@ -154,6 +154,15 @@ export class UsersController {
         @Body() fillReq: FillBalanceRequest,
         @Res() res: Response
     ) {
+        if (fillReq.amount <= 0) {
+            this.statistics.addStatistic({
+                description: `Error 400: incorrect balance provided`,
+                service: this.config.get('serviceName'),
+                timestamp: new Date().toISOString(),
+            });
+
+            return res.status(400).send(new BadRequestException());
+        }
         const userId = (req['verifiedUser'] as User).id;
 
         let user;

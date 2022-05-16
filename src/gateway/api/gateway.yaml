@@ -12,11 +12,11 @@ tags:
   - name: Stats
 
 paths:
-  /register:
+  /api/auth/register:
     post:
       tags:
         - Auth
-      summary: Register a user
+      summary: Регистрация пользователя
       requestBody:
         required: true
         content:
@@ -25,34 +25,44 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
         '200':
-          description: Registration successfull
+          description: Регистрация успешна
+        '409':
+          description: Пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictException'
 
-  /login:
+  /api/auth/login:
     post:
       tags:
         - Auth
-      summary: Login user
+      summary: Логин пользователя
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: '#/components/schemas/UserLogin'
       responses:
         '200':
-          description: New session
+          description: Сессия создана
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Session'
         '401':
-          description: Authorization failed
+          description: Ошибка авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
 
-  /logout:
+  /api/auth/logout:
     delete:
       tags:
         - Auth
-      summary: Logout user
+      summary: Логаут пользователя
       parameters:
         - in: header
           name: Authorization
@@ -63,30 +73,51 @@ paths:
           example: 'Bearer 12d4f234rvw21g34'
       responses:
         '200':
-          description: Logout successfull
+          description: Логаут успешен
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
 
-  /games:
+  /api/games:
     get:
       tags:
         - Games
-      summary: Get all games
+      summary: Получить список игр
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            minimum: 0
+        - in: query
+          name: size
+          schema:
+            type: number
+            minimum: 1
       responses:
         '200':
-          description: Games loaded
+          description: Игры загружены
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Game'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
 
-  /games/{id}:
+  /api/games/{id}:
     get:
       tags:
         - Games
-      summary: Get game by id
+      summary: Получить игру по id
       parameters:
         - in: path
           name: id
@@ -95,19 +126,23 @@ paths:
             type: number
       responses:
         '200':
-          description: Game loaded
+          description: Игра загружена
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Game'
         '404':
-          description: Game not found
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
 
-  /games/{id}/buy:
+  /api/games/{id}/buy:
     post:
       tags:
         - Games
-      summary: Buy a game
+      summary: Купить игру
       parameters:
         - in: header
           name: Authorization
@@ -128,19 +163,49 @@ paths:
               type: object
       responses:
         '200':
-          description: Game bought
+          description: Игра куплена
         '404':
-          description: Game not found
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
         '422':
-          description: Not enough money
+          description: Недостаточно средств
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityException'
+        '409':
+          description: Игра уже куплена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '403':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenException'
 
-  /me:
+  /api/me:
     get:
       tags:
         - User
-      summary: Get user info
+      summary: Получить информацию о пользователе
       parameters:
         - in: header
           name: Authorization
@@ -151,19 +216,35 @@ paths:
           example: 'Bearer 12d4f234rvw21g34'
       responses:
         '200':
-          description: User info
+          description: Краткая информация о пользователе
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
 
-  /me/library:
+  /api/me/library:
     get:
       tags:
         - User
-      summary: Get user's games
+      summary: Получить купленные пользователем игры
       parameters:
         - in: header
           name: Authorization
@@ -174,7 +255,7 @@ paths:
           example: 'Bearer 12d4f234rvw21g34'
       responses:
         '200':
-          description: User's games
+          description: Игры пользователя
           content:
             application/json:
               schema:
@@ -182,13 +263,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/Game'
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
 
-  /me/wallet:
+  /api/me/wallet:
     get:
       tags:
         - User
-      summary: User's balance
+      summary: Получить баланс пользователя
       parameters:
         - in: header
           name: Authorization
@@ -199,17 +296,33 @@ paths:
           example: 'Bearer 12d4f234rvw21g34'
       responses:
         '200':
-          description: User's balance
+          description: Баланс пользователя
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FillBalanceRequest'
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
     patch:
       tags:
         - User
-      summary: Fill balance
+      summary: Пополнить баланс пользователя
       parameters:
         - in: header
           name: Authorization
@@ -226,17 +339,41 @@ paths:
               $ref: '#/components/schemas/FillBalanceRequest'
       responses:
         '200':
-          description: Balance updated
-        '400':
-          description: Bad amount
+          description: Баланс пользователя обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FillBalanceRequest'
         '401':
-          description: Token invalid
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+        '400':
+          description: Некорректная сумма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
 
-  /statistics:
+  /api/statistics:
     get:
       tags:
         - Stats
-      summary: System statistics
+      summary: Получить статистику работы системы для сервиса
       parameters:
         - in: header
           name: Authorization
@@ -245,9 +382,24 @@ paths:
             type: string
           description: JWT token
           example: 'Bearer 12d4f234rvw21g34'
+        - in: query
+          name: service
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
       responses:
         '200':
-          description: Statistics
+          description: Статистика
           content:
             application/json:
               schema:
@@ -255,9 +407,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/Statistic'
         '401':
-          description: Token invalid
-        '403':
-          description: User is not admin
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
 
 
 components:
@@ -273,10 +433,10 @@ components:
           type: string
           format: email
 
-    LoginRequest:
+    UserLogin:
       type: object
       properties:
-        login:
+        username:
           type: string
         password:
           type: string
@@ -286,6 +446,7 @@ components:
       properties:
         amount:
           type: number
+          minimum: 1
 
     Statistic:
       type: object
@@ -317,8 +478,12 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: number
+        userId:
+          type: number
         token:
+          type: string
+        createDate:
           type: string
 
     Game:
@@ -338,3 +503,25 @@ components:
           type: string
         requirements:
           type: string
+
+    # Nest.JS builtins
+    ConflictException:
+      type: object
+
+    UnauthorizedException:
+      type: object
+
+    BadRequestException:
+      type: object
+
+    NotFoundException:
+      type: object
+
+    UnprocessableEntityException:
+      type: object
+
+    ForbiddenException:
+      type: object
+
+    ServiceUnavailableException:
+      type: object
