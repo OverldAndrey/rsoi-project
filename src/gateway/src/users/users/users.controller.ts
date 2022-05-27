@@ -100,10 +100,16 @@ export class UsersController {
             return res.status(404).send(new NotFoundException());
         }
 
-        const libraryGames = await firstValueFrom(this.transactions.getUsersTransactions(userId).pipe(
-            map(transactions => transactions.filter(t => t.gameId)),
-            switchMap(transactions => forkJoin(transactions.map(t => this.games.getGameById(t.gameId))))
-        ));
+        let libraryGames;
+        try {
+            libraryGames = await firstValueFrom(this.transactions.getUsersTransactions(userId).pipe(
+                map(transactions => transactions.filter(t => t.gameId)),
+                switchMap(transactions => forkJoin(transactions.map(t => this.games.getGameById(t.gameId))))
+            ));
+        } catch (e) {
+            // Fallback
+            res.status(200).send([]);
+        }
 
         this.statistics.addStatistic({
             description: `Got library for user with id ${userId}`,

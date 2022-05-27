@@ -1,5 +1,5 @@
 import { AdminApiService } from './admin-api.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ServiceType } from '../../core/models/statistic';
 
@@ -17,7 +17,9 @@ export class AdminService {
         dateFrom?: Date,
         dateTo?: Date,
     ) {
-        return firstValueFrom(this.adminApi.getStatistics(service, dateFrom?.toISOString(), dateTo?.toISOString()));
+        return firstValueFrom(this.adminApi.getStatistics(service, dateFrom?.toISOString(), dateTo?.toISOString()).pipe(
+            tap(val => { console.log(val); }),
+        ));
     }
 
 }

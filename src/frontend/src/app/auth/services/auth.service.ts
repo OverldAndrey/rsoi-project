@@ -56,7 +56,13 @@ export class AuthService {
     }
 
     public async login(login: UserLogin) {
-        const session = await firstValueFrom(this.authApi.login(login));
+        let session;
+        try {
+            session = await firstValueFrom(this.authApi.login(login));
+        } catch (err: unknown) {
+            this.removeSession();
+            throw err;
+        }
 
         localStorage.setItem(this.SESSION_STORAGE_KEY, JSON.stringify(session));
         this.sessionSubject.next(session);

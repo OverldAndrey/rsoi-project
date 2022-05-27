@@ -54,7 +54,7 @@ export class AuthController {
         const session = await this.auth.createOrUpdateSession({
             user: user,
             token: this.jwt.sign({ uid: user.id, rol: user.role, name: user.username }, {
-                expiresIn: 3600,
+                expiresIn: 36000,
             }),
             createDate: new Date(),
         });

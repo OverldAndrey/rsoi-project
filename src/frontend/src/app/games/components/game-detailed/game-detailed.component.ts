@@ -3,6 +3,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Game } from '../../../core/models/game';
 import { GamesService } from '../../services/games.service';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +21,7 @@ export class GameDetailedComponent implements OnInit {
         private readonly route: ActivatedRoute,
         public readonly auth: AuthService,
         private readonly cd: ChangeDetectorRef,
+        private readonly snackbar: MatSnackBar,
     ) { }
 
     public ngOnInit(): void {
@@ -29,12 +32,27 @@ export class GameDetailedComponent implements OnInit {
         });
     }
 
+    // eslint-disable-next-line max-statements
     public async buy() {
         if (!this.game) {
             return;
         }
 
-        await this.games.buyGame(this.game.id);
+        try {
+            await this.games.buyGame(this.game.id);
+        } catch (err: unknown) {
+            const message = (err as Error).message;
+            if (message.includes('409 Conflict')) {
+                this.snackbar.open('Ошибка: Игра уже в библиотеке', 'Закрыть', { duration: 5000 });
+            } else if (message.includes('422 Unprocessable Entity')) {
+                this.snackbar.open('Ошибка: Недостаточно средств', 'Закрыть', { duration: 5000 });
+            } else {
+                this.snackbar.open('Ошибка: Не получилось обработать запрос', 'Закрыть', { duration: 5000 });
+            }
+            throw err;
+        }
+
+        this.snackbar.open('Покупка совершена! Игра добавлена в библиотеку', 'Закрыть', { duration: 5000 });
     }
 
 }

@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UsersService } from '../../services/users.service';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-user-balance-dialog',
@@ -12,12 +13,14 @@ export class UserBalanceDialogComponent implements OnInit {
 
     public balance = NaN;
 
-    public fillBalanceControl = this.fb.control(0);
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    public fillBalanceControl = this.fb.control(1, Validators.min(1));
 
     constructor(
         private readonly users: UsersService,
         private readonly cd: ChangeDetectorRef,
         private readonly fb: FormBuilder,
+        private readonly snackbar: MatSnackBar,
         public readonly dialogRef: MatDialogRef<UserBalanceDialogComponent>,
         // eslint-disable-next-line @typescript-eslint/no-parameter-properties
         @Inject(MAT_DIALOG_DATA) public userId: number,
@@ -32,6 +35,11 @@ export class UserBalanceDialogComponent implements OnInit {
     }
 
     public async fillBalance() {
+        if (this.fillBalanceControl.invalid) {
+            this.snackbar.open('Ошибка: сумма должна быть больше 0', 'Закрыть', { duration: 5000 });
+            return;
+        }
+
         const newBalance = await this.users.fillBalance(this.fillBalanceControl.value as number);
 
         this.balance = newBalance.amount;

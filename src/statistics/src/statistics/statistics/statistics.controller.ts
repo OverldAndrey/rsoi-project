@@ -22,11 +22,15 @@ export class StatisticsController {
             timestamp: new Date()
         });
 
-        return this.statistics.getStatistics(
+        const stats = await this.statistics.getStatistics(
             service,
             dateFrom ? new Date(dateFrom) : undefined,
             dateTo ? new Date(dateTo) : undefined,
         );
+
+        console.log(stats);
+
+        return stats;
     }
 
     @Post('')

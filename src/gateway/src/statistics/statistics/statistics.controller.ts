@@ -1,6 +1,6 @@
 import {BadRequestException, Controller, Get, Query, Req, Res, UseGuards} from '@nestjs/common';
 import {StatisticsService} from "./statistics.service";
-import {firstValueFrom} from "rxjs";
+import {firstValueFrom, tap} from "rxjs";
 import {AuthGuard} from "@nestjs/passport";
 import {Request, Response} from "express";
 import {Roles} from "../../auth/decorators/roles.decorator";
@@ -41,6 +41,14 @@ export class StatisticsController {
             timestamp: new Date().toISOString(),
         });
 
-        return res.status(200).send(firstValueFrom(this.statistics.getStatistics(service, dateFrom, dateTo)));
+        const stats = await firstValueFrom(this.statistics.getStatistics(service, dateFrom, dateTo));
+
+        console.log(stats);
+
+        res.status(200).send(stats);
+
+        console.log(res);
+
+        return res;
     }
 }
