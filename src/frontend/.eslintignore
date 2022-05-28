@@ -1,0 +1,9 @@
+node_modules
+dist
+asinc-open-api-mock
+jest.config.js
+fixtures
+coverage
+__snapshots__
+karma.conf.js
+**.spec.ts

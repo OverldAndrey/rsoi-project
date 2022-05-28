@@ -1,0 +1,27 @@
+<app-games-toolbar></app-games-toolbar>
+
+<div class="game-name-container">
+    <div class="game-back-button">
+        <button mat-icon-button routerLink="/games"><mat-icon>arrow_back</mat-icon></button>
+    </div>
+    <div class="game-name-wrapper">
+        <span class="game-name">{{game?.name}}</span>
+        <span class="game-credits">Разработчик: {{game?.developer}}</span>
+        <span class="game-credits">Издатель: {{game?.publisher}}</span>
+    </div>
+    <div class="game-price-container">
+        <span class="game-price">{{game?.price}} руб.</span>
+        <button
+            mat-flat-button
+            [disabled]="!auth.session || (auth.roleObservable | async) !== 'User'"
+            (click)="buy()"
+            color="primary"
+        >Купить</button>
+    </div>
+</div>
+<div class="game-description-container">
+    <span class="game-header">Описание:</span>
+    <span class="game-description">{{game?.description}}</span>
+    <span class="game-header">Системные требования:</span>
+    <span class="game-description">{{game?.requirements}}</span>
+</div>

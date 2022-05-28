@@ -1,0 +1,79 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 48px;
+    min-height: 160px;
+    width: 50%;
+
+    .user-name-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: 96px;
+
+        .return-button {
+            --button-size: 48px;
+            width: var(--button-size);
+            height: var(--button-size);
+
+            mat-icon {
+                width: var(--button-size);
+                height: var(--button-size);
+                font-size: var(--button-size);
+                line-height: var(--button-size);
+            }
+        }
+
+        .user-name {
+            font-size: 32px;
+            line-height: 48px;
+            font-weight: 600;
+        }
+    }
+
+    .user-info-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: 72px;
+
+        .user-email {
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: 500;
+        }
+    }
+
+    .user-balance-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+
+        .user-balance-button {
+            margin-left: 16px;
+        }
+    }
+
+    .no-user-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        .no-user {
+            font-size: 32px;
+            line-height: 48px;
+            font-weight: 600;
+        }
+    }
+}

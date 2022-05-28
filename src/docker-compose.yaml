@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - rsoi-net
+
+  games:
+    build: ./games
+    ports:
+      - "8081:8081"
+    networks:
+      - rsoi-net
+
+  sessions:
+    build: ./sessions
+    ports:
+      - "8083:8083"
+    networks:
+      - rsoi-net
+
+  transactions:
+    build: ./transactions
+    ports:
+      - "8082:8082"
+    networks:
+      - rsoi-net
+
+  statistics:
+    build: ./statistics
+    ports:
+      - "8084:8084"
+    networks:
+      - rsoi-net
+
+  postgres:
+    image: library/postgres:13
+    container_name: postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./postgres/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+    networks:
+      - rsoi-net
+
+networks:
+  rsoi-net:
+
+volumes:
+  db-data:

@@ -1,0 +1,22 @@
+:host {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    gap: 16px;
+
+    .user-image {
+        height: 48px;
+        width: 48px;
+        border-radius: 50% 50%;
+        background-color: red;
+    }
+}

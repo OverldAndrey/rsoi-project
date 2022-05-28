@@ -1,0 +1,365 @@
+name: RSOI CW Workflow
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  games:
+    name: Games
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/games
+          npm ci
+
+      - name: Build App
+        run:  |
+          cd ./src/games
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/games
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/games
+          file: ./src/games/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-games:latest
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-flights-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/flight
+#          usedocker: true
+          
+  sessions:
+    name: Sessions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/sessions
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/sessions
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/sessions
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/sessions
+          file: ./src/sessions/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-sessions:latest
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-tickets-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/ticket
+#          usedocker: true
+          
+  transactions:
+    name: Transactions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/transactions
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/transactions
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/transactions
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/transactions
+          file: ./src/transactions/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-transactions:latest
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-bonuses-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/bonus
+#          usedocker: true
+
+  statistics:
+    name: Statistics
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/statistics
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/statistics
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/statistics
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/statistics
+          file: ./src/statistics/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-statistics:latest
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-bonuses-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/bonus
+#          usedocker: true
+          
+  gateway:
+    name: Gateway
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/gateway
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/gateway
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/gateway
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/gateway
+          file: ./src/gateway/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-gateway:latest
+#
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-lab2-gateway-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/gateway
+#          usedocker: true
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          # cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd ./src/frontend
+          npm ci
+
+      - name: Build App
+        run: |
+          cd ./src/frontend
+          npm run build
+
+      - name: Test App
+        run: |
+          cd ./src/frontend
+          npm run test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/frontend
+          file: ./src/frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rsoi-cw-frontend:latest
+
+#      - name: Deploy App
+#        id: heroku-deploy
+#        uses: akhileshns/heroku-deploy@v3.12.12
+#        with:
+#          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#          heroku_app_name: rsoi-cw-frontend-ignatev
+#          heroku_email: andrey3000.99@mail.ru
+#          appdir: src/frontend
+#          usedocker: true
+          
+#  test:
+#    name: Autograding
+#    needs: [tickets, flights, bonuses, gateway]
+#    runs-on: self-hosted
+#    steps:
+#      - uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#
+#      # TODO build, test and deploy project
+#
+#      - name: Run API Tests
+#        uses: matt-ball/newman-action@master
+#        with:
+#          # TODO insert your <Variant> and <ServiceName>
+#          collection: v1/postman/[rsoi] postman_collection.json
+#          environment: v1/postman/[rsoi][heroku] postman_environment.json
+#          delayRequest: 3000
+#          reporters: '[ "cli" ]'
+#          envVar: '[{ "key":"serviceName", "value":"rsoi-lab2-bonuses-ignatev" }, { "key":"herokuApiToken", "value":"${{secrets.HEROKU_API_KEY}}" }]'
+#
+#      - uses: education/autograding@v1
+#        id: autograder
+#        continue-on-error: true

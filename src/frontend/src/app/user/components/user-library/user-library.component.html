@@ -1,0 +1,13 @@
+<span class="library-header">Библиотека</span>
+
+<div class="library-list">
+    <app-game-card
+        *ngFor="let g of games; trackBy: trackBy"
+        [game]="g"
+        [displayPrice]="false"
+        [routerLink]="['/games', g.id]"
+        class="game-card"
+    ></app-game-card>
+
+    <div class="game-placeholder game-card" *ngIf="(games.length ?? 0) % 2 === 1"></div>
+</div>

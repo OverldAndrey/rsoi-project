@@ -1,0 +1,527 @@
+openapi: 3.0.3
+
+info:
+  title: Gateway
+  description: Gateway
+  version: 1.0.0
+
+tags:
+  - name: Games
+  - name: Auth
+  - name: User
+  - name: Stats
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Регистрация успешна
+        '409':
+          description: Пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictException'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Логин пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Сессия создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Ошибка авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+
+  /api/auth/logout:
+    delete:
+      tags:
+        - Auth
+      summary: Логаут пользователя
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Логаут успешен
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+
+  /api/games:
+    get:
+      tags:
+        - Games
+      summary: Получить список игр
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            minimum: 0
+        - in: query
+          name: size
+          schema:
+            type: number
+            minimum: 1
+      responses:
+        '200':
+          description: Игры загружены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+
+  /api/games/{id}:
+    get:
+      tags:
+        - Games
+      summary: Получить игру по id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Игра загружена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+
+  /api/games/{id}/buy:
+    post:
+      tags:
+        - Games
+      summary: Купить игру
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Игра куплена
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '422':
+          description: Недостаточно средств
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityException'
+        '409':
+          description: Игра уже куплена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '403':
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenException'
+
+  /api/me:
+    get:
+      tags:
+        - User
+      summary: Получить информацию о пользователе
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Краткая информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+
+  /api/me/library:
+    get:
+      tags:
+        - User
+      summary: Получить купленные пользователем игры
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Игры пользователя
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+
+  /api/me/wallet:
+    get:
+      tags:
+        - User
+      summary: Получить баланс пользователя
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      responses:
+        '200':
+          description: Баланс пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FillBalanceRequest'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+    patch:
+      tags:
+        - User
+      summary: Пополнить баланс пользователя
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FillBalanceRequest'
+      responses:
+        '200':
+          description: Баланс пользователя обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FillBalanceRequest'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '503':
+          description: Сервис недоступен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableException'
+        '404':
+          description: Игра не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundException'
+        '400':
+          description: Некорректная сумма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+
+  /api/statistics:
+    get:
+      tags:
+        - Stats
+      summary: Получить статистику работы системы для сервиса
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: JWT token
+          example: 'Bearer 12d4f234rvw21g34'
+        - in: query
+          name: service
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Статистика
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Statistic'
+        '401':
+          description: Токен недействителен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedException'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+
+    UserLogin:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    FillBalanceRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          minimum: 1
+
+    Statistic:
+      type: object
+      properties:
+        service:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - Action
+            - Error
+        timestamp:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        username:
+          type: string
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: number
+        userId:
+          type: number
+        token:
+          type: string
+        createDate:
+          type: string
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        developer:
+          type: string
+        publisher:
+          type: string
+        price:
+          type: number
+        description:
+          type: string
+        requirements:
+          type: string
+
+    # Nest.JS builtins
+    ConflictException:
+      type: object
+
+    UnauthorizedException:
+      type: object
+
+    BadRequestException:
+      type: object
+
+    NotFoundException:
+      type: object
+
+    UnprocessableEntityException:
+      type: object
+
+    ForbiddenException:
+      type: object
+
+    ServiceUnavailableException:
+      type: object

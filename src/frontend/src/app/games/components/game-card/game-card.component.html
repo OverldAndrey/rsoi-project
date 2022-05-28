@@ -1,0 +1,10 @@
+<mat-card class="game-card">
+    <mat-card-title>{{game.name}}</mat-card-title>
+    <mat-card-subtitle>{{game.developer}}</mat-card-subtitle>
+    <mat-card-content class="game-description">{{game.description | truncate:200}}</mat-card-content>
+    <div class="game-price-container" *ngIf="displayPrice">
+        <div class="game-price">
+            {{game.price | price}}
+        </div>
+    </div>
+</mat-card>

@@ -1,0 +1,11 @@
+<span class="flex-splitter"></span>
+<div class="user-profile" *ngIf="auth.session; else notAuthed" [routerLink]="userRoute | async">
+    <span>{{auth.nameObservable | async}}</span>
+    <div class="user-image"></div>
+</div>
+<ng-template #notAuthed>
+    <div class="user-profile" routerLink="/auth/login">
+        <span>Войти</span>
+        <div class="user-image"></div>
+    </div>
+</ng-template>

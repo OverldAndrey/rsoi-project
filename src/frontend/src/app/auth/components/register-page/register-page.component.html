@@ -1,0 +1,20 @@
+<div [formGroup]="registerGroup" class="register-form-container">
+    <mat-form-field class="register-form-field" appearance="outline">
+        <mat-label>Имя пользователя</mat-label>
+        <input matInput formControlName="username">
+    </mat-form-field>
+
+    <mat-form-field class="register-form-field" appearance="outline">
+        <mat-label>Пароль</mat-label>
+        <input matInput formControlName="password" type="password">
+    </mat-form-field>
+
+    <mat-form-field class="register-form-field" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+    </mat-form-field>
+
+    <div class="register-form-controls">
+        <button mat-flat-button (click)="submit()" color="primary">Зарегистрироваться</button>
+    </div>
+</div>

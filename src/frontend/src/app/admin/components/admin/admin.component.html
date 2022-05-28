@@ -1,0 +1,41 @@
+<div [formGroup]="statsFilterForm" class="stats-form">
+    <mat-form-field class="stats-form-field" appearance="outline">
+        <mat-label>Сервисы</mat-label>
+        <mat-select formControlName="services" multiple required>
+            <mat-option *ngFor="let service of services; trackBy:trackBy" [value]="service">{{service}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="stats-form-field" appearance="outline">
+        <mat-label>Даты</mat-label>
+        <mat-date-range-input [rangePicker]="datePicker">
+            <input matStartDate formControlName="dateFrom">
+            <input matEndDate formControlName="dateTo">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #datePicker></mat-date-range-picker>
+    </mat-form-field>
+
+    <button mat-flat-button (click)="getStats()" class="stats-button" color="primary">Показать</button>
+    <button mat-button (click)="logout()" class="stats-button" color="primary">Выйти из аккаунта</button>
+</div>
+
+<div class="stats-table-container">
+    <table mat-table [dataSource]="(statsSubject | async) ?? []" class="stats-table">
+        <ng-container matColumnDef="service">
+            <th mat-header-cell *matHeaderCellDef>Сервис</th>
+            <td mat-cell *matCellDef="let stat">{{stat.service}}</td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Описание</th>
+            <td mat-cell *matCellDef="let stat">{{stat.description}}</td>
+        </ng-container>
+        <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>Время</th>
+            <td mat-cell *matCellDef="let stat">{{stat.timestamp | date:'hh:mm:ss dd.MM.yyyy'}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true;"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    </table>
+</div>

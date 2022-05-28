@@ -1,0 +1,11 @@
+-- file: 10-create-user-and-db.sql
+CREATE DATABASE games;
+CREATE DATABASE sessions;
+CREATE DATABASE transactions;
+CREATE DATABASE statistics;
+CREATE ROLE program WITH PASSWORD 'test';
+ALTER ROLE program WITH LOGIN;
+GRANT ALL PRIVILEGES ON DATABASE games TO program;
+GRANT ALL PRIVILEGES ON DATABASE sessions TO program;
+GRANT ALL PRIVILEGES ON DATABASE transactions TO program;
+GRANT ALL PRIVILEGES ON DATABASE statistics TO program;
